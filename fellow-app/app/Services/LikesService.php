@@ -18,11 +18,24 @@ class LikesService
         return $likes;
     }
 
-    public function findLike($idLike)
+    public function findLikeAtPost($postId)
     {
-        $like = $this->likesRepository->find($idLike);
+        $post = $this->likesRepository->where("post_id", $postId)->get();
 
-        return $like;
+        return $post;
+    }
+
+    public function likesExistsInPost($dataPost)
+    {
+        $user_id = $dataPost["user_reference"];
+        $post_id = $dataPost["post_id"];
+
+        $like_exists = $this->likesRepository->where("user_reference", $user_id)->get();
+        $like_exists_in_post = $this->likesRepository->where("post_id", $post_id)->get();
+
+        if (count($like_exists) >= 1 && count($like_exists_in_post) >= 1) return false;
+        
+        return true;
     }
 
     public function storeLike(array $data)
@@ -39,8 +52,9 @@ class LikesService
         return $updateLike;
     }
 
-    public function deleteLike($idLike){
-        $deletedLike = $this-> likesRepository->delete($idLike);
+    public function deleteLike($idLike)
+    {
+        $deletedLike = $this->likesRepository->delete($idLike);
 
         return $deletedLike;
     }

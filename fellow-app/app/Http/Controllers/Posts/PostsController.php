@@ -27,6 +27,8 @@ class PostsController extends Controller
     {   
         $posts = $this->postsService->findAllPosts();
 
+        if(count($posts) === 0) return response()->json(['error' => 'Nenhum resultado!'], 400); 
+
         return response()->json($posts); 
     }
 
@@ -43,10 +45,10 @@ class PostsController extends Controller
         $user = $this->user;
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"]);
+        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"], 400);
 
         $authentic = $this->helper->authenticUser($user->id, $data['user_id']);
-        if(!$authentic) return response()->json(["msg" => "Você não é autor do post!"]);
+        if(!$authentic) return response()->json(["msg" => "Você não é autor do post!"], 400);
 
         /* Aplicar contracts */
         $validator = Validator::make($data, [
@@ -88,10 +90,10 @@ class PostsController extends Controller
         $data = $request->all();
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"]);
+        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"], 400);
 
         $authentic = $this->helper->authenticUser($user->id, $data['user_id']);
-        if(!$authentic) return response()->json(["msg" => "Você não é autor do post!"]);
+        if(!$authentic) return response()->json(["msg" => "Você não é autor do post!"], 400);
 
         $postUpdate = $this->postsService->updatePost($data, $id);
 
@@ -109,7 +111,7 @@ class PostsController extends Controller
         $user = $this->user;
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"]);
+        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"], 400);
         
         /* não esquecer de verificar autenticidade */
 

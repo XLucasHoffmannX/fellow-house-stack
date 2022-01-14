@@ -29,6 +29,8 @@ class LikesController extends Controller
     {
         $likes = $this->likesService->findAllLikes();
 
+        if(count($likes) === 0) return response()->json(['error' => 'Sem resultados de posts!']);
+
         return response()->json($likes);
     }
 
@@ -46,7 +48,7 @@ class LikesController extends Controller
         $user = $this->user;
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"]);
+        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"], 400);
 
         /* Aplicar contracts */
         $validator = Validator::make($data, [
@@ -57,6 +59,11 @@ class LikesController extends Controller
 
         if($validator->fails()) return response()->json([ 'errors' => $validator->errors() ], 400);
         
+        /* Like Exists */
+        $like_exists = $this->likesService->likesExistsInPost($data);
+
+        if(!$like_exists) return response()->json(['error' => 'Ação de like excedido'], 400);
+
         $newLike = $this->likesService->storeLike($data);
 
         return response()->json($newLike);
@@ -70,7 +77,11 @@ class LikesController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = $this->likesService->findLikeAtPost($id);
+
+        if(count($post) === 0) return response()->json(['error' => 'Post não possui like'], 400);
+
+        return response()->json($post);
     }
 
     /**
