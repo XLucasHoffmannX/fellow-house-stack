@@ -22,6 +22,8 @@ class PostsService
     {
         $post = $this->postsRepository->find($idPost);
 
+        if(!$post) return false;
+
         return $post;
     }
 

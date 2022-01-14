@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Likes;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Services\LikesService;
+use App\Services\PostsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,10 +14,14 @@ class LikesController extends Controller
     protected $likesService;
     protected $helper;
 
-    public function __construct(LikesService $likesService, Helper $helper)
-    {
+    public function __construct(
+        LikesService $likesService,
+        Helper $helper,
+        PostsService $postsService
+    ) {
         $this->user = Auth()->guard('api')->user();
         $this->likesService = $likesService;
+        $this->postsService = $postsService;
         $this->helper = $helper;
     }
 
@@ -29,7 +34,7 @@ class LikesController extends Controller
     {
         $likes = $this->likesService->findAllLikes();
 
-        if(count($likes) === 0) return response()->json(['error' => 'Sem resultados de posts!']);
+        if (count($likes) === 0) return response()->json(['error' => 'Sem resultados de likes!']);
 
         return response()->json($likes);
     }
@@ -47,8 +52,16 @@ class LikesController extends Controller
 
         $user = $this->user;
 
+        /* Post existe */
+        $postExists = $this->postsService->findPost($data["post_id"]);
+
+        if (!$postExists) return response()->json(["error" => "Erro encontrado! Post inexistente!"], 400);
+
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["msg" => "Erro encontrado! Usário inexistente!"], 400);
+        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+
+        $authVerify = $this->helper->verifyAuthUser($data['user_reference']);
+        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
 
         /* Aplicar contracts */
         $validator = Validator::make($data, [
@@ -57,12 +70,12 @@ class LikesController extends Controller
             "type" => "numeric|max:4"
         ]);
 
-        if($validator->fails()) return response()->json([ 'errors' => $validator->errors() ], 400);
-        
+        if ($validator->fails()) return response()->json(['errors' => $validator->errors()], 400);
+
         /* Like Exists */
         $like_exists = $this->likesService->likesExistsInPost($data);
 
-        if(!$like_exists) return response()->json(['error' => 'Ação de like excedido'], 400);
+        if (!$like_exists) return response()->json(['error' => 'Ação de like excedido'], 400);
 
         $newLike = $this->likesService->storeLike($data);
 
@@ -79,7 +92,7 @@ class LikesController extends Controller
     {
         $post = $this->likesService->findLikeAtPost($id);
 
-        if(count($post) === 0) return response()->json(['error' => 'Post não possui like'], 400);
+        if (count($post) === 0) return response()->json(['error' => 'Post não possui like'], 400);
 
         return response()->json($post);
     }
@@ -93,17 +106,19 @@ class LikesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+        $data = $request->all();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $user = $this->user;
+
+        $authVerify = $this->helper->verifyAuthUser($user->id);
+        if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+
+        /* Post existe */
+        $postExists = $this->postsService->findPost($data["post_id"]);
+        if (!$postExists) return response()->json(["error" => "Erro encontrado! Post inexistente!"], 400);
+
+        $removeLike = $this->likesService->updateLike($data, $id);
+
+        return response()->json($removeLike);
     }
 }

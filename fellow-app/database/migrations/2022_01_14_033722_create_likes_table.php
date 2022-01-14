@@ -19,6 +19,7 @@ class CreateLikesTable extends Migration
             $table->unsignedBigInteger('post_id');
             $table->unsignedBigInteger('user_reference');
             $table->string('type')->default(0);
+            $table->boolean('ativ')->default(true);
 
             /* relacionamento */
             $table->foreign('post_id')->references('id')->on('posts');

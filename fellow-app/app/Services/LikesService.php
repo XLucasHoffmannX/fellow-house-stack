@@ -20,7 +20,7 @@ class LikesService
 
     public function findLikeAtPost($postId)
     {
-        $post = $this->likesRepository->where("post_id", $postId)->get();
+        $post = $this->likesRepository->where("post_id", $postId)->where("ativ", 1)->get();
 
         return $post;
     }
@@ -50,12 +50,5 @@ class LikesService
         $updateLike = $this->likesRepository->update($data, $idLike);
 
         return $updateLike;
-    }
-
-    public function deleteLike($idLike)
-    {
-        $deletedLike = $this->likesRepository->delete($idLike);
-
-        return $deletedLike;
     }
 }
