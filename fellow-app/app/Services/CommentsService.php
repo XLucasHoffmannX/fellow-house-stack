@@ -27,7 +27,7 @@ class CommentsService
 
     public function storeComment(array $data)
     {   
-        $newComment = $this->commentsRepository($data);
+        $newComment = $this->commentsRepository->create($data);
 
         return $newComment;
     }
