@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\Comments\CommentsController;
+use App\Repositories\CommentsRepository;
 
 class CommentsService
 {
-    public function __construct(CommentsController $commentsRepository)
+    public function __construct(CommentsRepository $commentsRepository)
     {
         $this->commentsRepository = $commentsRepository;
     }
@@ -30,5 +30,19 @@ class CommentsService
         $newComment = $this->commentsRepository->create($data);
 
         return $newComment;
+    }
+
+    public function updateComment(array $data, $idComment)
+    {
+        $updatedComment = $this->commentsRepository->update($data, $idComment);
+
+        return $updatedComment;
+    }
+
+    public function deletedPost($idComment)
+    {
+        $deletedPost = $this->commentsRepository->delete($idComment);
+
+        return $deletedPost;
     }
 }

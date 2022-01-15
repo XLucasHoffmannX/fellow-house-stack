@@ -14,6 +14,6 @@ Route::group(['prefix' => 'fellow'], function(){
     Route::resource('posts', '\App\Http\Controllers\Posts\PostsController');
 
     Route::resource('like', '\App\Http\Controllers\Likes\LikesController');
-    
+
     Route::resource('comment', '\App\Http\Controllers\Comments\CommentsController');
 });

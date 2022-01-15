@@ -36,14 +36,14 @@ class PostsService
 
     public function updatePost(array $data, $idPost)
     {   
-        $updatePost = $this-> postsRepository->update($data, $idPost);
+        $updatePost = $this->postsRepository->update($data, $idPost);
 
         return $updatePost;
     }
 
     public function deletePost($idPost)
     {   
-        $deletedPost = $this-> postsRepository->delete($idPost);
+        $deletedPost = $this->postsRepository->delete($idPost);
 
         return $deletedPost;
     }

@@ -6,17 +6,21 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Services\CommentsService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CommentsController extends Controller
 {
-    public function __construct(CommentsService $commentsService, Helper $helper)
+    protected $commentsService;
+    protected $helper;
+
+    public function __construct(
+        CommentsService $commentsService,
+        Helper $helper
+    )
     {
         $this->user = Auth()->guard('api')->user();
-        $this->commentsService = $commentsService;
         $this->helper = $helper;
+        $this->commentsService = $commentsService;
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -24,7 +28,7 @@ class CommentsController extends Controller
      */
     public function index()
     {
-        return response()->json(["error" => "ola mundo"]);
+        return response()->json([ 'msg' => 'ola' ]);
     }
 
     /**
