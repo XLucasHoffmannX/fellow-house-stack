@@ -45,7 +45,7 @@ class PostsController extends Controller
         $user = $this->user;
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+        if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usuário inexistente!"], 400);
 
         $authentic = $this->helper->authenticUser($user->id, $data['user_id']);
         if(!$authentic) return response()->json(["error" => "Você não é autor do post!"], 400);
@@ -112,8 +112,6 @@ class PostsController extends Controller
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
         if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
-        
-        /* não esquecer de verificar autenticidade */
 
         $deletedPost = $this->postsService->deletePost($id);
 

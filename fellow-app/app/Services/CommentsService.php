@@ -13,7 +13,7 @@ class CommentsService
 
     public function findAllComments()
     {
-        $comments = $this->commentsRepository->find();
+        $comments = $this->commentsRepository->all();
 
         return $comments;
     }

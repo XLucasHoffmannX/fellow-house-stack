@@ -58,10 +58,10 @@ class LikesController extends Controller
         if (!$postExists) return response()->json(["error" => "Erro encontrado! Post inexistente!"], 400);
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usuário inexistente!"], 400);
 
         $authVerify = $this->helper->verifyAuthUser($data['user_reference']);
-        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+        if (!$authVerify) return response()->json(["error" => "Erro encontrado! Usuário inexistente!"], 400);
 
         /* Aplicar contracts */
         $validator = Validator::make($data, [
@@ -111,7 +111,7 @@ class LikesController extends Controller
         $user = $this->user;
 
         $authVerify = $this->helper->verifyAuthUser($user->id);
-        if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usário inexistente!"], 400);
+        if(!$authVerify) return response()->json(["error" => "Erro encontrado! Usuário inexistente!"], 400);
 
         /* Post existe */
         $postExists = $this->postsService->findPost($data["post_id"]);
