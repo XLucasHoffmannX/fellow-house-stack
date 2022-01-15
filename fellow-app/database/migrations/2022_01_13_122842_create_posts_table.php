@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->string('type')->default(0);
-            $table->string('content');
+            $table->longText('content');
             $table->string('localization')->nullable();
             $table->string('images')->nullable();
             $table->string('tags')->nullable();
