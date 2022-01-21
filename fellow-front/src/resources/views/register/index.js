@@ -44,7 +44,7 @@ export default function Register() {
                     <strong className="text-danger">{error.email[0]}</strong>
                 }
                 <div className='mt-3'>
-                    <label className="form-label">Nom de Usuário:</label>
+                    <label className="form-label">Nome de Usuário:</label>
                     <input type="text" className="form-control" value={user.username || ''} required
                         onChange={
                             text => {

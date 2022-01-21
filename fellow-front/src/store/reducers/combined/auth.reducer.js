@@ -3,7 +3,7 @@ import { actionTypes } from '../../actions/auth.action';
 const access = localStorage.getItem('access_token');
 let authorization;
 
-access ? authorization=true : authorization=false;
+access ? authorization = true : authorization = false;
 
 const initialState = {
     credentials: {
@@ -11,7 +11,8 @@ const initialState = {
         password: ''
     },
     success: false,
-    logged: authorization
+    logged: authorization,
+    user: {}
 }
 
 // eslint-disable-next-line
@@ -26,6 +27,11 @@ export default (state = initialState, { type, payload }) => {
                     ...payload
                 }
             }
+        case actionTypes.USER:
+            return {
+                ...state,
+                user: payload
+            }
 
         case actionTypes.SUCCESS:
             return {
@@ -38,7 +44,7 @@ export default (state = initialState, { type, payload }) => {
                 ...state,
                 logged: payload
             }
-        
+
         default:
             return state
     }

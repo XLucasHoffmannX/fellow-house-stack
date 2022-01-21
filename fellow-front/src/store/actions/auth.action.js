@@ -1,11 +1,12 @@
 import { changeLoading } from '../actions/loading.action';
-import {changeNotify} from '../actions/notify.action';
-import { Http } from '../../config/Http'
+import { changeNotify } from '../actions/notify.action';
+import { Http, HttpAuth } from '../../config/Http';
 
 export const actionTypes = {
     CHANGE: 'AUTH_CHANGE',
     SUCCESS: 'AUTH_SUCCESS',
-    LOGGED: 'AUTH_LOGGED'
+    LOGGED: 'AUTH_LOGGED',
+    USER: 'AUTH_USER'
 }
 
 export const change = payload => ({
@@ -23,8 +24,27 @@ export const logged = payload => ({
     payload
 })
 
-export const setUserToken = token => dispatch => {
+export const user = payload => ({
+    type: actionTypes.USER,
+    payload
+})
+
+export const setUser =  () => dispatch => {
+    return HttpAuth.get('/user')
+        .then(res => {
+            dispatch(user(res.data.userAuth))
+            if(res.data.userAuth.verify === 0){
+                dispatch(changeNotify({
+                    open: true,
+                    message: `${res.data.userAuth.name} você precisa terminar suas configurações`
+                }));
+            }
+        })
+}
+
+export const setUserToken = token => async dispatch => {
     localStorage.setItem('access_token', token);
+
     dispatch(change({
         email: '',
         password: ''
@@ -42,9 +62,9 @@ export const login = credentials => dispatch => {
 
     // authentication
     return Http.post('/oauth/token', {
-        grant_type : "password",
-        client_id : process.env.REACT_APP_CLIENT_ID,
-        client_secret : process.env.REACT_APP_CLIENT_SECRET,
+        grant_type: "password",
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        client_secret: process.env.REACT_APP_CLIENT_SECRET,
         username: credentials.email,
         password: credentials.password,
         scope: ""
@@ -57,31 +77,31 @@ export const login = credentials => dispatch => {
             })
         )
         dispatch(
-            changeLoading({open: false})
+            changeLoading({ open: false })
         );
 
-        if(typeof res !== 'undefined'){
-            if(res.data.access_token){
+        if (typeof res !== 'undefined') {
+            if (res.data.access_token) {
                 dispatch(setUserToken(res.data.access_token))
             }
         }
     }).catch(err => {
-        dispatch(changeLoading({open: false}));
+        dispatch(changeLoading({ open: false }));
 
-        if(typeof err.response !== 'undefined'){
-            if(err.response.status === 401 || err.response.status === 400){
-                dispatch( changeNotify({
+        if (typeof err.response !== 'undefined') {
+            if (err.response.status === 401 || err.response.status === 400) {
+                dispatch(changeNotify({
                     open: true,
                     class: 'error',
                     message: 'E-mail ou senha incorretos!'
-                }) )
+                }))
             }
-        }else{
-            dispatch( changeNotify({
+        } else {
+            dispatch(changeNotify({
                 open: true,
                 class: 'error',
                 message: 'Erro encontrado, tente novamente mais tarde!'
-            }) )
+            }))
         }
     })
 }

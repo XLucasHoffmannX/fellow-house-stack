@@ -24,7 +24,7 @@ export const success = (payload) => ({
     payload
 })
 
-export const setUserToken = token => dispatch => {
+export const setUserToken = token => async dispatch => {
     localStorage.setItem('access_token', token);
     dispatch(change({
         name: '',
